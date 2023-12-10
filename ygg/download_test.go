@@ -9,7 +9,7 @@ func TestFindAndDlFile(t *testing.T) {
 	id := ""
 	pass := ""
 
-	_, client, err := Lookup("Monte Cristo", 10*time.Second)
+	_, client, err := Lookup("Monte Cristo", "", 10*time.Second)
 	if err != nil {
 		t.Fatal(err)
 	}

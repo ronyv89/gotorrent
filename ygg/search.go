@@ -140,7 +140,7 @@ func parseSearchPage(html string) ([]Torrent, error) {
 
 // Lookup takes a user search as a parameter, launches the http request
 // with a custom timeout, and returns clean torrent information fetched from Ygg Torrent.
-func Lookup(in string, timeout time.Duration) ([]Torrent, *http.Client, error) {
+func Lookup(in string, category string, timeout time.Duration) ([]Torrent, *http.Client, error) {
 	searchParams.Add("name", in)
 	searchURL.RawQuery = searchParams.Encode()
 

@@ -57,15 +57,17 @@ type Torrent struct {
 
 // A typical final url looks like:
 // https://1337x.to/search/Dumas/1/
-func buildSearchURL(in string) (string, error) {
+func buildSearchURL(in string, category string) (string, error) {
 	var URL *url.URL
 	URL, err := url.Parse(baseURL)
 	if err != nil {
 		return "", fmt.Errorf("error during url parsing: %v", err)
 	}
-
-	URL.Path += "/search/" + in + "/1/"
-
+	if category != "" {
+		URL.Path += "/category-search/" + in + "/" + category + "/1/"
+	} else {
+		URL.Path += "/search/" + in + "/1/"
+	}
 	return URL.String(), nil
 }
 
@@ -122,8 +124,8 @@ func parseSearchPage(html string) ([]Torrent, error) {
 
 // Lookup takes a user search as a parameter, launches the http request
 // with a custom timeout, and returns clean torrent information fetched from 1337x.to
-func Lookup(in string, timeout time.Duration) ([]Torrent, error) {
-	url, err := buildSearchURL(in)
+func Lookup(in string, category string, timeout time.Duration) ([]Torrent, error) {
+	url, err := buildSearchURL(in, category)
 	if err != nil {
 		return nil, fmt.Errorf("error while building url: %v", err)
 	}

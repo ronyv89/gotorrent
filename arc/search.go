@@ -105,7 +105,7 @@ func parseSearchPage(html string) ([]Torrent, error) {
 
 // Lookup takes a user search as a parameter, launches the http request
 // with a custom timeout, and returns clean torrent information fetched from archive.org
-func Lookup(in string, timeout time.Duration) ([]Torrent, error) {
+func Lookup(in string, category string, timeout time.Duration) ([]Torrent, error) {
 	url, err := buildSearchURL(in)
 	if err != nil {
 		return nil, fmt.Errorf("error while building url: %v", err)

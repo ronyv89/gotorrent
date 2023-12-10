@@ -151,7 +151,7 @@ func setLogger(isVerbose bool) {
 	log.AddHook(filename.NewHook())
 }
 
-func init() {
+func Init() {
 	// Set custom line break in order for the script to work on any OS
 	if runtime.GOOS == "windows" {
 		lineBreak = "\r\n"
@@ -160,7 +160,8 @@ func init() {
 	}
 }
 
-func TorrentSearch(searchSources []string, query string) []Torrent {
+func TorrentSearch(searchSources []string, category string, query string) []Torrent {
+	Init()
 	cleanedUsrSourcesSlc := rmDuplicates(searchSources)
 	for _, usrSource := range cleanedUsrSourcesSlc {
 		if usrSource == "all" {
@@ -211,7 +212,7 @@ func TorrentSearch(searchSources []string, query string) []Torrent {
 					"input":          s.In,
 					"sourceToSearch": "arc",
 				}).Debug("Start search goroutine")
-				arcTorrents, err := arc.Lookup(s.In, timeout)
+				arcTorrents, err := arc.Lookup(s.In, category, timeout)
 				if err != nil {
 					arcSearchErrCh <- err
 					return
@@ -265,13 +266,14 @@ func TorrentSearch(searchSources []string, query string) []Torrent {
 					"input":          s.In,
 					"sourceToSearch": "otts",
 				}).Debug("Start search goroutine")
-				ottsTorrents, err := otts.Lookup(s.In, timeout)
+				ottsTorrents, err := otts.Lookup(s.In, category, timeout)
 				if err != nil {
 					ottsSearchErrCh <- err
 					return
 				}
 				var torList []Torrent
 				for _, ottsTorrent := range ottsTorrents {
+					fmt.Println(ottsTorrent)
 					t := Torrent{
 						DescURL:  ottsTorrent.DescURL,
 						Name:     ottsTorrent.Name,
@@ -292,7 +294,7 @@ func TorrentSearch(searchSources []string, query string) []Torrent {
 					"input":          s.In,
 					"sourceToSearch": "ygg",
 				}).Debug("Start search goroutine")
-				yggTorrents, httpClient, err := ygg.Lookup(s.In, timeout)
+				yggTorrents, httpClient, err := ygg.Lookup(s.In, category, timeout)
 				if err != nil {
 					yggSearchErrCh <- err
 					return
